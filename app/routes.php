@@ -17,3 +17,4 @@ Route::get('/', function()
 });
 
 Route::resource('user', 'UserController');
+Route::resource('thread', 'ThreadController', array( 'except' => array( 'index', 'update' ) ) );
