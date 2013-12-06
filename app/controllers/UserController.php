@@ -9,7 +9,8 @@ class UserController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		$users = User::all();
+		return View::make('users.index')->with('users', $users);
 	}
 
 	/**
@@ -19,7 +20,8 @@ class UserController extends \BaseController {
 	 */
 	public function create()
 	{
-		//
+		Input::flash();
+		return View::make('users.create');
 	}
 
 	/**
@@ -29,7 +31,11 @@ class UserController extends \BaseController {
 	 */
 	public function store()
 	{
-		//
+		$post_data = Input::all();
+		$user = new User;
+		$user->fill( $post_data );
+		$user->save();
+		return Redirect::action('UserController@show', array( $user->id ));
 	}
 
 	/**
@@ -41,6 +47,8 @@ class UserController extends \BaseController {
 	public function show($id)
 	{
 		//
+		$user = User::find($id);
+		return View::make('users.show')->with('user', $user);
 	}
 
 	/**
