@@ -12,7 +12,7 @@ class EditUsersTable extends Migration {
 	public function up()
 	{
 		Schema::table('users', function($table) {
-			$table->string('password');
+			$table->string('password')->nullable();
 			$table->string('token')->unique();
 			$table->enum('role', array('sender', 'recipient', 'admin'))->default('admin');
 		});
