@@ -36,7 +36,14 @@ class ThreadController extends \BaseController {
 		$thread->save();
 
 		$message = new Message;
-		$message->saveMessage( $thread->id, $user->id, $data['message'] );
+		if( $message->saveMessage( $thread->id, $user->id, $data['message'] ) ) {
+			Session::flash( 'flash_type', 'success' );
+			Session::flash( 'flash_message', 'Message successfully saved.');
+			return Redirect::action('ThreadController@show', array(
+					'thread_token' => $thread->token,
+					'user_token' => $user->token
+				));
+		}
 
 		echo 'done';
 	}
@@ -53,14 +60,25 @@ class ThreadController extends \BaseController {
 		if( empty( $thread ) ) {
 			Session::flash( 'flash_type', 'danger' );
 			Session::flash( 'flash_message', 'Message thread does not exist' );
-			return View::make( 'errors.show' );
+			return View::make( 'threads.create' );
 		}
+
 		$user = User::where( 'token', '=', $user_token )->first();
+
 		if( empty( $user ) ) {
 			Session::flash( 'flash_type', 'danger' );
-			Session::flash( 'flash_message', 'User does not exist' );
-			return View::make( 'flash.show' );
+			Session::flash( 'flash_message', 'Sorry, you are not authorized to view this message thread.' );
+			return View::make('threads.create');
 		}
+
+		$allowed_users = $thread->users;
+
+		if( !$allowed_users->contains( $user->id ) ) {
+			Session::flash( 'flash_type', 'danger' );
+			Session::flash( 'flash_message', 'Sorry, you are not authorized to view this message thread.' );
+			return View::make( 'threads.create' );
+		}
+
 		View::share( 'thread', $thread );
 		View::share( 'user', $user );
 		return View::make( 'threads.show' );

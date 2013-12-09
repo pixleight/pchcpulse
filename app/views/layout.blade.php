@@ -10,6 +10,10 @@
 		<div class="container">
 			<h1>Laravel Quickstart</h1>
 
+			@if( Session::get('flash_type') )
+				@include('flash.show')
+			@endif
+
 			@yield('content')
 		</div>
 

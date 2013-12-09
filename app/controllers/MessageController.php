@@ -24,7 +24,14 @@ class MessageController extends \BaseController {
 		$thread = Thread::where( 'token', '=', $data['thread_token'] )->first();
 
 		$message = new Message;
-		$message->saveMessage( $thread->id, $user->id, $data['message'] );
+		if( $message->saveMessage( $thread->id, $user->id, $data['message'] ) ) {
+			Session::flash( 'flash_type', 'success' );
+			Session::flash( 'flash_message', 'Message successfully saved.');
+			return Redirect::action('ThreadController@show', array(
+					'thread_token' => $thread->token,
+					'user_token' => $user->token
+				));
+		}
 
 		echo 'saved message';
 	}

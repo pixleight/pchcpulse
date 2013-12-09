@@ -15,4 +15,8 @@ class Thread extends Eloquent {
 		return $this->hasMany('Message');
 	}
 
+	public function users() {
+		return $this->belongsToMany('User');
+	}
+
 }
