@@ -2,7 +2,7 @@
 
 class Thread extends Eloquent {
 
-	protected $fillable = array('subject', 'token', 'department_id');
+	protected $fillable = array('subject', 'token', 'department_id', 'auth_token', 'active');
 
 	/**
 	 * The database table used by the model.
@@ -12,7 +12,7 @@ class Thread extends Eloquent {
 	protected $table = 'threads';
 
 	public function messages() {
-		return $this->hasMany('Message');
+		return $this->hasMany('Message')->orderBy( 'created_at', 'asc' );
 	}
 
 	public function users() {

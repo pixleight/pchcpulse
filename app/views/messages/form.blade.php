@@ -1,5 +1,5 @@
 <p>
-	{{ Form::label( 'message', 'Message' ) }}
+	{{ Form::label( 'message', 'Your Message' ) }}
 	{{ Form::textarea( 'message' ) }}
 </p>
 <p>

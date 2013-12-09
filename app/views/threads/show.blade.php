@@ -4,8 +4,8 @@
 	<h1>{{ $thread->subject }}</h1>
 
 	@foreach ( $thread->messages as $message )
-		<?php $user = User::find( $message->user_id ); ?>
-		<p>{{{ $user->name }}} : {{{ $message->message }}}</p>
+		<p> {{ strftime('%b %e, %Y at %l:%M %p', strtotime($message->created_at) ) }}</p>
+		<p>{{{ $message->user->name }}} : {{{ $message->message }}}</p>
 	@endforeach
 
 	{{ Form::open(array('action' => 'MessageController@store')) }}

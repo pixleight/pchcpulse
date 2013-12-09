@@ -23,4 +23,15 @@ Route::resource('user', 'UserController');
 Route::resource('message', 'MessageController', array( 'only' => array( 'store' ) ) );
 Route::resource('thread', 'ThreadController', array( 'except' => array( 'index', 'update', 'show' ) ) );
 
-Route::get('thread/{thread_token}/{user_token}', 'ThreadController@show')->where(array('thread_token' => $token_pattern));
+Route::get('thread/{thread_token}/{user_token}', 'ThreadController@show')
+	->where(array(
+		'thread_token' => $token_pattern,
+		'user_token' => $token_pattern
+	));
+
+Route::get('thread/confirm/{thread_token}/{user_token}/{auth_token}', 'ThreadController@confirm')
+	->where(array(
+		'thread_token' => $token_pattern,
+		'user_token' => $token_pattern,
+		'auth_token' => '[a-zA-Z0-9]{16}'
+	));

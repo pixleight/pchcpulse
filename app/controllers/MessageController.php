@@ -25,6 +25,8 @@ class MessageController extends \BaseController {
 
 		$message = new Message;
 		if( $message->saveMessage( $thread->id, $user->id, $data['message'] ) ) {
+			$emailController = new EmailController;
+			$emailController->sendMessage( $thread, $message );
 			Session::flash( 'flash_type', 'success' );
 			Session::flash( 'flash_message', 'Message successfully saved.');
 			return Redirect::action('ThreadController@show', array(

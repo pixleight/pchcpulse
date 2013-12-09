@@ -32,20 +32,18 @@ class ThreadController extends \BaseController {
 		$thread = new Thread;
 		$thread->subject = $data['subject'];
 		$thread->token = $thread_token;
+		$thread->auth_token = substr( md5($data['subject'].$thread_token), 16);
 		$thread->department_id = 1;
 		$thread->save();
 
 		$message = new Message;
 		if( $message->saveMessage( $thread->id, $user->id, $data['message'] ) ) {
-			Session::flash( 'flash_type', 'success' );
-			Session::flash( 'flash_message', 'Message successfully saved.');
-			return Redirect::action('ThreadController@show', array(
-					'thread_token' => $thread->token,
-					'user_token' => $user->token
-				));
-		}
 
-		echo 'done';
+			$emailController = new EmailController;
+			$emailController->sendConfirmation( $thread, $user, $message );
+
+			return View::make( 'threads.confirm' );
+		}
 	}
 
 	/**
@@ -57,26 +55,11 @@ class ThreadController extends \BaseController {
 	public function show($thread_token, $user_token)
 	{
 		$thread = Thread::where( 'token', '=', $thread_token )->first();
-		if( empty( $thread ) ) {
-			Session::flash( 'flash_type', 'danger' );
-			Session::flash( 'flash_message', 'Message thread does not exist' );
-			return View::make( 'threads.create' );
-		}
-
 		$user = User::where( 'token', '=', $user_token )->first();
 
-		if( empty( $user ) ) {
-			Session::flash( 'flash_type', 'danger' );
-			Session::flash( 'flash_message', 'Sorry, you are not authorized to view this message thread.' );
-			return View::make('threads.create');
-		}
-
-		$allowed_users = $thread->users;
-
-		if( !$allowed_users->contains( $user->id ) ) {
-			Session::flash( 'flash_type', 'danger' );
-			Session::flash( 'flash_message', 'Sorry, you are not authorized to view this message thread.' );
-			return View::make( 'threads.create' );
+		$authorizedUser = $this->authorizedView( $thread, $user );
+		if( $authorizedUser ) {
+			return $authorizedUser;
 		}
 
 		View::share( 'thread', $thread );
@@ -115,6 +98,67 @@ class ThreadController extends \BaseController {
 	public function destroy($id)
 	{
 		//
+	}
+
+	public function confirm( $thread_token, $user_token, $auth_token ) {
+		$thread = Thread::where( 'token', '=', $thread_token )->first();
+		$user = User::where( 'token', '=', $user_token )->first();
+
+		$authorizedUser = $this->authorizedView( $thread, $user );
+		if( $authorizedUser ) {
+			return $authorizedUser;
+		}
+
+		if( $thread->auth_token == $auth_token ) {
+			$thread->active = 1;
+			$thread->save();
+			$message = $thread->messages->first();
+			$emailController = new EmailController;
+			$emailController->sendMessage( $thread, $message );
+			Session::flash( 'flash_type', 'success' );
+			Session::flash( 'flash_message', 'Message thread successfully confirmed' );
+			return Redirect::action('ThreadController@show', array(
+					'thread_token' => $thread->token,
+					'user_token' => $user->token
+				));
+		} else {
+			Session::flash( 'flash_type', 'danger' );
+			Session::flash( 'flash_message', 'Your confirmation key is incorrect.' );
+			return View::make( 'threads.create' );
+		}
+	}
+
+
+
+	/**
+	 * Check to see if user is authorized to view the thread
+	 *
+	 * @param  obj  $thread
+	 * @param  obj  $user
+	 * @return Response
+	 */
+	private function authorizedView( $thread, $user ) {
+		if( empty( $thread ) ) {
+			Session::flash( 'flash_type', 'danger' );
+			Session::flash( 'flash_message', 'Message thread does not exist' );
+			return View::make( 'threads.create' );
+		}
+
+		if( empty( $user ) ) {
+			Session::flash( 'flash_type', 'danger' );
+			Session::flash( 'flash_message', 'Sorry, you are not authorized to view this message thread.' );
+			return View::make('threads.create');
+		}
+
+		$allowed_users = $thread->users;
+
+		if( !$allowed_users->contains( $user->id ) ) {
+			Session::flash( 'flash_type', 'danger' );
+			Session::flash( 'flash_message', 'Sorry, you are not authorized to view this message thread.' );
+			return View::make( 'threads.create' );
+		}
+
+		return false;
 	}
 
 }
