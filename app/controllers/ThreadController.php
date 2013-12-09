@@ -23,6 +23,7 @@ class ThreadController extends \BaseController {
 		$user = User::where( 'email', '=', $data['email'] )->first();
 		if( empty($user) ) {
 			$user = new User;
+			$data['token'] = substr(md5(microtime()),rand(0,26),6);
 			$user->fill( $data );
 			$user->save();
 		}
@@ -33,6 +34,10 @@ class ThreadController extends \BaseController {
 		$thread->token = $thread_token;
 		$thread->department_id = 1;
 		$thread->save();
+
+		$message = new Message;
+		$message->saveMessage( $thread->id, $user->id, $data['message'] );
+
 		echo 'done';
 	}
 
@@ -42,9 +47,23 @@ class ThreadController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show($thread_token, $user_token)
 	{
-		//
+		$thread = Thread::where( 'token', '=', $thread_token )->first();
+		if( empty( $thread ) ) {
+			Session::flash( 'flash_type', 'danger' );
+			Session::flash( 'flash_message', 'Message thread does not exist' );
+			return View::make( 'errors.show' );
+		}
+		$user = User::where( 'token', '=', $user_token )->first();
+		if( empty( $user ) ) {
+			Session::flash( 'flash_type', 'danger' );
+			Session::flash( 'flash_message', 'User does not exist' );
+			return View::make( 'flash.show' );
+		}
+		View::share( 'thread', $thread );
+		View::share( 'user', $user );
+		return View::make( 'threads.show' );
 	}
 
 	/**

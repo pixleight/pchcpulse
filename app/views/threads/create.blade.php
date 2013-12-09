@@ -13,15 +13,9 @@
 			{{ Form::text( 'name' ) }}
 		</p>
 		<p>
-			{{ Form::label( 'email', 'Name' ) }}
+			{{ Form::label( 'email', 'Email' ) }}
 			{{ Form::text( 'email' ) }}
 		</p>
-		<p>
-			{{ Form::label( 'message', 'Message' ) }}
-			{{ Form::textarea( 'message' ) }}
-		</p>
-		<p>
-			{{ Form::submit('Submit') }}
-		</p>
+		@include('messages.form')
 	{{ Form::close() }}
 @stop

@@ -31,9 +31,10 @@ class UserController extends \BaseController {
 	 */
 	public function store()
 	{
-		$post_data = Input::all();
+		$data = Input::all();
 		$user = new User;
-		$user->fill( $post_data );
+		$data['token'] = substr(md5(microtime()),rand(0,26),6);
+		$user->fill( $data );
 		$user->save();
 		return Redirect::action('UserController@show', array( $user->id ));
 	}

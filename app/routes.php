@@ -11,10 +11,16 @@
 |
 */
 
+Route::pattern('token', '[A-Za-z0-9]{6}');
+$token_pattern = '[a-zA-Z0-9]{6}';
+
 Route::get('/', function()
 {
 	return View::make('hello');
 });
 
 Route::resource('user', 'UserController');
-Route::resource('thread', 'ThreadController', array( 'except' => array( 'index', 'update' ) ) );
+Route::resource('message', 'MessageController', array( 'only' => array( 'store' ) ) );
+Route::resource('thread', 'ThreadController', array( 'except' => array( 'index', 'update', 'show' ) ) );
+
+Route::get('thread/{thread_token}/{user_token}', 'ThreadController@show')->where(array('thread_token' => $token_pattern));

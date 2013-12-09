@@ -11,4 +11,8 @@ class Thread extends Eloquent {
 	 */
 	protected $table = 'threads';
 
+	public function messages() {
+		return $this->hasMany('Message');
+	}
+
 }
