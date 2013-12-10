@@ -4,8 +4,17 @@
 	<h1>{{ $thread->subject }}</h1>
 
 	@foreach ( $thread->messages as $message )
-		<p> {{ strftime('%b %e, %Y at %l:%M %p', strtotime($message->created_at) ) }}</p>
-		<p>{{{ $message->user->name }}} : {{{ $message->message }}}</p>
+		<div class="panel panel-{{($message->user->role == 'sender') ? 'default' : 'primary'}}">
+			<div class="panel-heading clearfix">
+				<h3 class="panel-title pull-left">
+					{{{ $message->user->name }}}
+				</h3>
+				<small class="pull-right">{{ strftime('%b %e, %Y at %l:%M %p', strtotime($message->created_at) ) }}</small>
+			</div>
+			<div class="panel-body">
+				{{{ $message->message }}}
+			</div>
+		</div>
 	@endforeach
 
 	{{ Form::open(array('action' => 'MessageController@store')) }}
