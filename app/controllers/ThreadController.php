@@ -38,7 +38,15 @@ class ThreadController extends \BaseController {
 		$thread->auth_token = substr( md5($data['subject'].$thread_token), 16);
 		$thread->department_id = 1;
 		$thread->anonymous = ( !empty($data['anonymous']) ) ? $data['anonymous'] : 0;
+
+		$department = Department::find( $thread->department_id );
+		$thread->department()->associate( $department );
+
 		$thread->save();
+
+		foreach( $department->users as $department_user ) {
+			$department_user->threads()->attach( $thread->id );
+		}
 
 		$message = new Message;
 		if( $message->saveMessage( $thread->id, $user->id, $data['message'] ) ) {

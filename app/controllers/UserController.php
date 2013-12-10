@@ -10,7 +10,8 @@ class UserController extends \BaseController {
 	public function index()
 	{
 		$users = User::all();
-		return View::make('users.index')->with('users', $users);
+		$departments = Department::all();
+		return View::make('users.index')->with('users', $users)->with('departments', $departments);
 	}
 
 	/**
@@ -60,7 +61,9 @@ class UserController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//
+		$user = User::find($id);
+		$departments = Department::all();
+		return View::make('users.edit')->with('user', $user)->with('departments', $departments);
 	}
 
 	/**
@@ -71,7 +74,19 @@ class UserController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		$data = Input::all();
+		$user = User::find( $id );
+		$user->fill( $data );
+
+		$department = Department::find( $data['department_id'] );
+		if( empty( $department ) ) {
+			$department = new Department;
+		}
+		$user->department_id = $data['department_id'];
+		$user->department()->associate( $department );
+
+		$user->save();
+		return Redirect::action('UserController@show', array( $user->id ));
 	}
 
 	/**

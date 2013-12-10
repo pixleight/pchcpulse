@@ -1,5 +1,8 @@
 A new message has been sent in the topic "{{{ $thread->subject }}}":
 
+{{{ $user->name }}} said:
+-----------------
+
 {{{ $msg->message }}}
 
 

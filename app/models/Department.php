@@ -14,4 +14,8 @@ class Department extends Eloquent {
 	public function users() {
 		return $this->hasMany('User');
 	}
+
+	public function threads() {
+		return $this->hasMany('Threads');
+	}
 }

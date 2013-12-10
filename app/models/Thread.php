@@ -19,4 +19,7 @@ class Thread extends Eloquent {
 		return $this->belongsToMany('User');
 	}
 
+	public function department() {
+		return $this->belongsTo('Department');
+	}
 }

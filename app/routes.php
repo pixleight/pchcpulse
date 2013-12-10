@@ -22,6 +22,7 @@ Route::get('/', function()
 Route::resource('user', 'UserController');
 Route::resource('message', 'MessageController', array( 'only' => array( 'store' ) ) );
 Route::resource('thread', 'ThreadController', array( 'except' => array( 'index', 'update', 'show' ) ) );
+Route::resource('department', 'DepartmentController');
 
 Route::get('thread/{thread_token}/{user_token}', 'ThreadController@show')
 	->where(array(
