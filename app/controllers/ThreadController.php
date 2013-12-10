@@ -26,6 +26,9 @@ class ThreadController extends \BaseController {
 			$data['token'] = substr(md5(microtime()),rand(0,26),6);
 			$user->fill( $data );
 			$user->save();
+		} else if( $user->name != $data['name'] ) {
+			$user->name = $data['name'];
+			$user->save();
 		}
 
 		$thread_token = substr(md5(microtime()),rand(0,26),6);
@@ -34,7 +37,7 @@ class ThreadController extends \BaseController {
 		$thread->token = $thread_token;
 		$thread->auth_token = substr( md5($data['subject'].$thread_token), 16);
 		$thread->department_id = 1;
-		$thread->anonymous = $data['anonymous'];
+		$thread->anonymous = ( !empty($data['anonymous']) ) ? $data['anonymous'] : 0;
 		$thread->save();
 
 		$message = new Message;
