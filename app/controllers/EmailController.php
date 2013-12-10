@@ -21,9 +21,6 @@ class EmailController extends \BaseController {
 	}
 
 	function sendMessage( $thread, $message ) {
-		if( $thread->anonymous ) {
-			$user->name = 'Anonymous';
-		}
 
 		$data = array(
 			'thread' => $thread,
@@ -32,6 +29,9 @@ class EmailController extends \BaseController {
 		);
 
 		foreach( $thread->users as $user ) {
+			if( $thread->anonymous && $user->role == 'sender' ) {
+				$user->name = 'Anonymous';
+			}
 			$data['user'] = $user;
 
 			Mail::send( array( 'text' => 'emails.message' ), $data, function($message) use ( $user )

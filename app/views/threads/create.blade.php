@@ -18,7 +18,7 @@
 		</p>
 		<p>
 			{{ Form::label( 'anonymous', 'Make these messages anonymous' ) }}
-			{{ Form::checkbox( 'anonymous', 'true' ) }}
+			{{ Form::checkbox( 'anonymous', 1 ) }}
 		</p>
 		@include('messages.form')
 	{{ Form::close() }}

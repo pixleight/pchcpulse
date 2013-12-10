@@ -43,6 +43,8 @@ class ThreadController extends \BaseController {
 			$emailController = new EmailController;
 			$emailController->sendConfirmation( $thread, $user, $message );
 
+			Session::flash( 'flash_type', 'success' );
+			Session::flash( 'flash_message', 'Your message has been successfully saved.' );
 			return View::make( 'threads.confirm' );
 		}
 	}
@@ -61,6 +63,12 @@ class ThreadController extends \BaseController {
 		$authorizedUser = $this->authorizedView( $thread, $user );
 		if( $authorizedUser ) {
 			return $authorizedUser;
+		}
+
+		if( !$thread->active ) {
+			Session::flash( 'flash_type', 'warning' );
+			Session::flash( 'flash_message', 'This message thread has not been confirmed yet. Please check your email for the confirmation link.' );
+			return View::make( 'threads.confirm' );
 		}
 
 		View::share( 'thread', $thread );
