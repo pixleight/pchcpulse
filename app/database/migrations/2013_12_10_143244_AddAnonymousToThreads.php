@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddAuthToThreads extends Migration {
+class AddAnonymousToThreads extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -14,8 +14,7 @@ class AddAuthToThreads extends Migration {
 	{
 		Schema::table('threads', function(Blueprint $table)
 		{
-			$table->string('auth_token')->unique();
-			$table->boolean( 'active' )->default( 0 );
+			$table->boolean( 'anonymous' )->default( false );
 		});
 	}
 
@@ -28,8 +27,7 @@ class AddAuthToThreads extends Migration {
 	{
 		Schema::table('threads', function(Blueprint $table)
 		{
-			$table->dropColumn( 'auth_token' );
-			$table->dropColumn( 'active' );
+			$table->dropColumn( 'anonymous' );
 		});
 	}
 
