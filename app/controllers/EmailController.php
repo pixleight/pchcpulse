@@ -3,6 +3,10 @@
 class EmailController extends \BaseController {
 
 	function sendConfirmation( $thread, $user, $message ) {
+		if( $thread->anonymous ) {
+			$user->name = 'Anonymous';
+		}
+
 		$data = array(
 			'thread' => $thread,
 			'user' => $user,
@@ -17,6 +21,9 @@ class EmailController extends \BaseController {
 	}
 
 	function sendMessage( $thread, $message ) {
+		if( $thread->anonymous ) {
+			$user->name = 'Anonymous';
+		}
 
 		$data = array(
 			'thread' => $thread,

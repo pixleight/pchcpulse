@@ -4,6 +4,9 @@
 	<h1>{{ $thread->subject }}</h1>
 
 	@foreach ( $thread->messages as $message )
+		@if ( $thread->anonymous && $message->user->role == 'sender' )
+			<?php $message->user->name = 'Anonymous' ?>
+		@endif
 		<div class="panel panel-{{($message->user->role == 'sender') ? 'default' : 'primary'}}">
 			<div class="panel-heading clearfix">
 				<h3 class="panel-title pull-left">

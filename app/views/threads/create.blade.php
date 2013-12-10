@@ -16,6 +16,10 @@
 			{{ Form::label( 'email', 'Email' ) }}
 			{{ Form::text( 'email' ) }}
 		</p>
+		<p>
+			{{ Form::label( 'anonymous', 'Make these messages anonymous' ) }}
+			{{ Form::checkbox( 'anonymous', 'true' ) }}
+		</p>
 		@include('messages.form')
 	{{ Form::close() }}
 @stop

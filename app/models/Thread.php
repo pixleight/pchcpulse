@@ -2,7 +2,7 @@
 
 class Thread extends Eloquent {
 
-	protected $fillable = array('subject', 'token', 'department_id', 'auth_token', 'active');
+	protected $fillable = array('subject', 'token', 'department_id', 'auth_token', 'active', 'anonymous');
 
 	/**
 	 * The database table used by the model.

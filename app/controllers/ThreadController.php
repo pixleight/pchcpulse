@@ -34,6 +34,7 @@ class ThreadController extends \BaseController {
 		$thread->token = $thread_token;
 		$thread->auth_token = substr( md5($data['subject'].$thread_token), 16);
 		$thread->department_id = 1;
+		$thread->anonymous = $data['anonymous'];
 		$thread->save();
 
 		$message = new Message;
