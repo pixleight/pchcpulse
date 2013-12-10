@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-	Department create!
+	<h2>Create a New Department</h2>
 
 	{{ Form::open(array('action' => 'DepartmentController@store')) }}
 		<p>

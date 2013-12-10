@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-	Users update!
+	<h2>Edit user: {{ $user->name }}</h2>
 
 	{{ Form::open(array('action' => array( 'UserController@update', $user->id ), 'method' => 'put' ) ) }}
 		<p>

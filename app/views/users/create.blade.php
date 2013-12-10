@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-	Users create!
+	<h2>Create a New User!</h2>
 
 	{{ Form::open(array('action' => 'UserController@store')) }}
 		<p>

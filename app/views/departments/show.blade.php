@@ -1,6 +1,5 @@
 @extends('layout')
 
 @section('content')
-	Department show!
-	<p>{{ $department->name }}</p>
+	<h2>{{ $department->name }} <small>Department</small></h2>
 @stop

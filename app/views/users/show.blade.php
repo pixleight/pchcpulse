@@ -1,7 +1,6 @@
 @extends('layout')
 
 @section('content')
-	User show!
-	<p>{{ $user->name }}</p>
+	<h2>{{ $user->name }} <small>User</small></h2>
 	{{ link_to_route('user.edit', 'Edit', $user->id ); }}
 @stop

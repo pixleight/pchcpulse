@@ -8,7 +8,7 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1>Laravel Quickstart</h1>
+			<h1>PCHC Pulse <small>Getting the Heartbeat of PCHC</small></h1>
 
 			@if( Session::get('flash_type') )
 				@include('flash.show')
@@ -17,6 +17,7 @@
 			@yield('content')
 		</div>
 
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 	</body>
 </html>

@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-	<h1>{{ $thread->subject }}</h1>
+	<h2>{{ $thread->subject }} <small>Message Topic</small></h2>
 
 	@foreach ( $thread->messages as $message )
 		@if ( $thread->anonymous && $message->user->role == 'sender' )
@@ -20,7 +20,7 @@
 		</div>
 	@endforeach
 
-	{{ Form::open(array('action' => 'MessageController@store')) }}
+	{{ Form::open(array('action' => 'MessageController@store', 'class' => 'form-horizontal')) }}
 		{{ Form::hidden( 'user_token', $user->token ) }}
 		{{ Form::hidden( 'thread_token', $thread->token ) }}
 		@include('messages.form')
