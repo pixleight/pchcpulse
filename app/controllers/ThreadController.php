@@ -20,15 +20,31 @@ class ThreadController extends \BaseController {
 	public function store()
 	{
 		$data = Input::all();
-		$user = User::where( 'email', '=', $data['email'] )->first();
-		if( empty($user) ) {
-			$user = new User;
-			$data['token'] = substr(md5(microtime()),rand(0,26),6);
-			$user->fill( $data );
-			$user->save();
-		} else if( $user->name != $data['name'] ) {
-			$user->name = $data['name'];
-			$user->save();
+
+		$validator = Validator::make(
+			$data,
+			array(
+				'subject' => 'required',
+				'message' => 'required'
+			)
+		);
+
+		if( $validator->fails() ) {
+			$messages = $validator->messages();
+			return Redirect::to( 'thread/create' )->withErrors( $validator );
+		}
+
+		if( !empty( $data['email'] ) ) {
+			$user = User::where( 'email', '=', $data['email'] )->first();
+			if( empty($user) ) {
+				$user = new User;
+				$data['token'] = substr(md5(microtime()),rand(0,26),6);
+				$user->fill( $data );
+				$user->save();
+			} else if( $user->name != $data['name'] ) {
+				$user->name = $data['name'];
+				$user->save();
+			}
 		}
 
 		$thread_token = substr(md5(microtime()),rand(0,26),6);
