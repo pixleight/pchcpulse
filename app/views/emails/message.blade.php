@@ -1,9 +1,9 @@
-A new message has been sent in the topic "{{{ $thread->subject }}}":
+A new message has been sent in the topic "{{ $thread->subject }}":
 
-{{{ $user->name }}} said:
+{{ $sender->name }} said:
 -----------------
 
-{{{ $msg->message }}}
+{{ $msg->message }}
 
 
 <?php $url = $thread->token . '/' . $user->token; ?>

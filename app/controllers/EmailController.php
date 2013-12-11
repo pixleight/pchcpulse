@@ -25,8 +25,14 @@ class EmailController extends \BaseController {
 		$data = array(
 			'thread' => $thread,
 			'msg' => $message,
+			'sender' => $message->user,
 			'user' => null
 		);
+
+		if( $thread->anonymous && $message->user->role == 'sender' ) {
+			$data['sender']->name = 'Anonymous';
+		}
+
 
 		foreach( $thread->users as $user ) {
 			if( $thread->anonymous && $user->role == 'sender' ) {
