@@ -25,9 +25,15 @@ class EmailController extends \BaseController {
 		$data = array(
 			'thread' => $thread,
 			'msg' => $message,
-			'sender' => $message->user,
 			'user' => null
 		);
+
+		if( $message->user ) {
+			$data['sender'] = $message->user;
+		} else {
+			$data['sender'] = new User;
+			$message->user = new User;
+		}
 
 		if( $thread->anonymous && $message->user->role == 'sender' ) {
 			$data['sender']->name = 'Anonymous';

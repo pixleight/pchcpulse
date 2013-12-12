@@ -11,16 +11,19 @@ class Message extends Eloquent {
 	 */
 	protected $table = 'messages';
 
-	public function saveMessage( $thread_id, $user_id, $message )
+	public function saveMessage( $thread_id, $user_id = 0, $message, $noreply = 0 )
 	{
-		$user = User::find( $user_id );
-		if( !$user->threads->contains( $thread_id ) ) {
-			$user->threads()->attach( $thread_id );
+		if( $user_id ) {
+			$user = User::find( $user_id );
+			if( !$user->threads->contains( $thread_id ) ) {
+				$user->threads()->attach( $thread_id );
+			}
 		}
 
 		$this->message = $message;
 		$this->thread_id = $thread_id;
 		$this->user_id = $user_id;
+		$this->noreply = $noreply;
 		return $this->save();
 	}
 

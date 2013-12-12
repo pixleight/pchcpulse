@@ -5,7 +5,7 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
-	protected $fillable = array('email', 'name', 'token');
+	protected $fillable = array('email', 'name', 'token', 'password', 'role');
 
 	/**
 	 * The database table used by the model.
@@ -20,6 +20,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var array
 	 */
 	protected $hidden = array('password');
+
+	function __construct() {
+		$this->role = 'sender';
+	}
 
 	/**
 	 * Get the unique identifier for the user.

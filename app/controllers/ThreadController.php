@@ -45,6 +45,10 @@ class ThreadController extends \BaseController {
 				$user->name = $data['name'];
 				$user->save();
 			}
+			$noreply = false;
+		} else {
+			$user = new User;
+			$noreply = true;
 		}
 
 		$thread_token = substr(md5(microtime()),rand(0,26),6);
@@ -54,6 +58,11 @@ class ThreadController extends \BaseController {
 		$thread->auth_token = substr( md5($data['subject'].$thread_token), 16);
 		$thread->department_id = 1;
 		$thread->anonymous = ( !empty($data['anonymous']) ) ? $data['anonymous'] : 0;
+
+		if( !$user->id ) {
+			$thread->anonymous = 1;
+			$thread->active = 1;
+		}
 
 		$department = Department::find( $thread->department_id );
 		$thread->department()->associate( $department );
@@ -65,10 +74,13 @@ class ThreadController extends \BaseController {
 		}
 
 		$message = new Message;
-		if( $message->saveMessage( $thread->id, $user->id, $data['message'] ) ) {
+		if( $message->saveMessage( $thread->id, $user->id, $data['message'], $noreply ) ) {
 
-			$emailController = new EmailController;
-			$emailController->sendConfirmation( $thread, $user, $message );
+			if( !$user->id ) {
+				$message = $thread->messages->first();
+				$emailController = new EmailController;
+				$emailController->sendMessage( $thread, $message );
+			}
 
 			Session::flash( 'flash_type', 'success' );
 			Session::flash( 'flash_message', 'Your message has been successfully saved.' );

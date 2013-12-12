@@ -21,8 +21,8 @@ class UserController extends \BaseController {
 	 */
 	public function create()
 	{
-		Input::flash();
-		return View::make('users.create');
+		$departments = Department::all();
+		return View::make('users.create')->with('departments', $departments);
 	}
 
 	/**
@@ -33,9 +33,36 @@ class UserController extends \BaseController {
 	public function store()
 	{
 		$data = Input::all();
+
+		$rules = array(
+			'email' => 'required|unique:users'
+		);
+
+		if( $data['password'] ) {
+			$rules['password'] = 'required';
+			$rules['password_confirmation'] = 'required|same:password';
+		}
+
+		$validator = Validator::make( $data, $rules );
+
+		if( $validator->fails() ) {
+			$messages = $validator->messages();
+			return Redirect::to( 'user/create' )->withErrors( $validator )->withInput();
+		}
+
 		$user = new User;
 		$data['token'] = substr(md5(microtime()),rand(0,26),6);
+		$data['password'] = Hash::make( $data['password'] );
+		$data['role'] = 'recipient';
 		$user->fill( $data );
+
+		$department = Department::find( $data['department_id'] );
+		if( empty( $department ) ) {
+			$department = new Department;
+		}
+		$user->department_id = $data['department_id'];
+		$user->department()->associate( $department );
+		
 		$user->save();
 		return Redirect::action('UserController@show', array( $user->id ));
 	}
