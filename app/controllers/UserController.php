@@ -9,9 +9,10 @@ class UserController extends \BaseController {
 	 */
 	public function index()
 	{
-		$users = User::whereRaw("role in ('recipient', 'admin')")->get();
-		$departments = Department::all();
-		return View::make('users.index')->with('users', $users)->with('departments', $departments);
+		$sort['orderby'] = Input::get('orderby') ? Input::get('orderby') : 'name';
+		$sort['order'] = Input::get('order') ? Input::get('order') : 'asc';
+		$users = User::whereRaw("role in ('recipient', 'admin')")->orderBy($sort['orderby'], $sort['order'])->get();
+		return View::make('users.index')->with('users', $users)->with('sort', $sort);
 	}
 
 	/**
@@ -21,7 +22,7 @@ class UserController extends \BaseController {
 	 */
 	public function create()
 	{
-		$departments = Department::all();
+		$departments = Department::orderBy('name')->get();
 		return View::make('users.create')->with('departments', $departments);
 	}
 
