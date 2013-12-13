@@ -9,7 +9,7 @@ class UserController extends \BaseController {
 	 */
 	public function index()
 	{
-		$users = User::all();
+		$users = User::whereRaw("role in ('recipient', 'admin')")->get();
 		$departments = Department::all();
 		return View::make('users.index')->with('users', $users)->with('departments', $departments);
 	}
@@ -102,7 +102,25 @@ class UserController extends \BaseController {
 	public function update($id)
 	{
 		$data = Input::all();
+
+		$rules = array(
+			'department_id' => 'required',
+		);
+
+		if( $data['password'] ) {
+			$rules['password'] = 'required';
+			$rules['password_confirmation'] = 'required|same:password';
+		}
+
+		$validator = Validator::make( $data, $rules );
+
+		if( $validator->fails() ) {
+			$messages = $validator->messages();
+			return Redirect::to( 'user/'.$id.'/edit' )->withErrors( $validator )->withInput();
+		}
+
 		$user = User::find( $id );
+		$data['password'] = Hash::make( $data['password'] );
 		$user->fill( $data );
 
 		$department = Department::find( $data['department_id'] );
@@ -113,7 +131,9 @@ class UserController extends \BaseController {
 		$user->department()->associate( $department );
 
 		$user->save();
-		return Redirect::action('UserController@show', array( $user->id ));
+		Session::flash( 'flash_type', 'success' );
+		Session::flash( 'flash_message', 'Recipient "' . $user->name . '" has been updated.' );
+		return Redirect::action('UserController@index' );
 	}
 
 	/**
