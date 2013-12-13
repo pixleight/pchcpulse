@@ -19,10 +19,13 @@ Route::get('/', function()
 	return View::make('hello');
 });
 
-Route::resource('user', 'UserController');
+Route::group(array('before'=>'auth'), function() {   
+	Route::resource('user', 'UserController');
+	Route::resource('department', 'DepartmentController');
+});
+
 Route::resource('message', 'MessageController', array( 'only' => array( 'store' ) ) );
 Route::resource('thread', 'ThreadController', array( 'except' => array( 'index', 'update', 'show' ) ) );
-Route::resource('department', 'DepartmentController');
 
 Route::get('thread/{thread_token}/{user_token}', 'ThreadController@show')
 	->where(array(
@@ -36,3 +39,14 @@ Route::get('thread/confirm/{thread_token}/{user_token}/{auth_token}', 'ThreadCon
 		'user_token' => $token_pattern,
 		'auth_token' => '[a-zA-Z0-9]{16}'
 	));
+
+Route::get('login', 'UserController@login');
+Route::post('login', 'UserController@doLogin');
+
+Route::get('logout', function()
+{
+	Auth::logout();
+	Session::flash( 'flash_type', 'success' );
+	Session::flash( 'flash_message', 'You have been logged out.' );
+	return Redirect::route('thread.create');
+});

@@ -127,4 +127,23 @@ class UserController extends \BaseController {
 		//
 	}
 
+	public function login()
+	{
+		return View::make( 'users.login' );
+	}
+
+	public function doLogin()
+	{
+		if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>Input::get('password')))) {
+			Session::flash( 'flash_type', 'success' );
+			Session::flash( 'flash_message', 'You have successfully logged in.' );
+			return Redirect::to('thread/create');
+		} else {
+			Session::flash( 'flash_type', 'danger' );
+			Session::flash( 'flash_message', 'Your email/password was incorrect. Please try again.' );
+   			return Redirect::to('login')
+   				->withInput();
+}
+	}
+
 }

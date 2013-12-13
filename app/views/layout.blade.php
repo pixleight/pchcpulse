@@ -10,6 +10,10 @@
 		<div class="container">
 			<h1>PCHC Pulse <small>Getting the Heartbeat of PCHC</small></h1>
 
+			@if( Auth::check() )
+				@include('navigation')
+			@endif
+
 			@if( Session::get('flash_type') )
 				@include('flash.show')
 			@endif
