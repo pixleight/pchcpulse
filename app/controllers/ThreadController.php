@@ -9,7 +9,8 @@ class ThreadController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('threads.create');
+		$departments = Department::all();
+		return View::make('threads.create')->with( 'departments', $departments );
 	}
 
 	/**
@@ -25,13 +26,14 @@ class ThreadController extends \BaseController {
 			$data,
 			array(
 				'subject' => 'required',
+				'department_id' => 'required',
 				'message' => 'required'
 			)
 		);
 
 		if( $validator->fails() ) {
 			$messages = $validator->messages();
-			return Redirect::to( 'thread/create' )->withErrors( $validator );
+			return Redirect::to( 'thread/create' )->withErrors( $validator )->withInput();
 		}
 
 		if( !empty( $data['email'] ) ) {
@@ -56,7 +58,7 @@ class ThreadController extends \BaseController {
 		$thread->subject = $data['subject'];
 		$thread->token = $thread_token;
 		$thread->auth_token = substr( md5($data['subject'].$thread_token), 16);
-		$thread->department_id = 1;
+		$thread->department_id = $data['department_id'];
 		$thread->anonymous = ( !empty($data['anonymous']) ) ? $data['anonymous'] : 0;
 
 		if( !$user->id ) {

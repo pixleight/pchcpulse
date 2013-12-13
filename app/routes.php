@@ -26,6 +26,7 @@ Route::group(array('before'=>'auth'), function() {
 
 Route::resource('message', 'MessageController', array( 'only' => array( 'store' ) ) );
 Route::resource('thread', 'ThreadController', array( 'except' => array( 'index', 'update', 'show' ) ) );
+Route::get( 'thread', 'ThreadController@create' );
 
 Route::get('thread/{thread_token}/{user_token}', 'ThreadController@show')
 	->where(array(
