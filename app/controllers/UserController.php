@@ -145,7 +145,11 @@ class UserController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		$user = User::find($id);
+		$user->delete();
+		Session::flash( 'flash_type', 'success' );
+		Session::flash( 'flash_message', 'Recipient has been deleted.' );
+		return Redirect::action('UserController@index');
 	}
 
 	public function login()
