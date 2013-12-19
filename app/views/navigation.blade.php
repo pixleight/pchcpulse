@@ -22,6 +22,9 @@
 			<li>
 				{{ link_to( 'department/create', 'Add Department' ) }}
 			</li>
+			<li>
+				{{ link_to( 'department', 'Edit Departments' ) }}
+			</li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 			<li>
