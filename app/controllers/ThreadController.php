@@ -78,10 +78,13 @@ class ThreadController extends \BaseController {
 		$message = new Message;
 		if( $message->saveMessage( $thread->id, $user->id, $data['message'], $noreply ) ) {
 
-			if( !$user->id ) {
-				$message = $thread->messages->first();
-				$emailController = new EmailController;
+			$message = $thread->messages->first();
+			$emailController = new EmailController;
+
+			if( $noreply ) {
 				$emailController->sendMessage( $thread, $message );
+			} else {
+				$emailController->sendConfirmation( $thread, $user, $message );
 			}
 
 			Session::flash( 'flash_type', 'success' );

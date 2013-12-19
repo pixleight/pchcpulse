@@ -15,7 +15,7 @@
 				<small class="pull-right">{{ strftime('%b %e, %Y at %l:%M %p', strtotime($message->created_at) ) }}</small>
 			</div>
 			<div class="panel-body">
-				{{{ $message->message }}}
+				{{ $message->message }}
 			</div>
 		</div>
 	@endforeach

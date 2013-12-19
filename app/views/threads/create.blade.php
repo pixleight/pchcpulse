@@ -2,6 +2,9 @@
 
 @section('content')
 	<h2>Create a New Message Thread</h2>
+	<p class="lead">
+		A message "thread" is a series of messages &amp; replies in single topic. PCHC Pulse allows you to send messages, anonymously if you wish, to many departments in PCHC. Even if you choose to remain anonymous, you will still receive any replies to your messages, and will be able to reply yourself.
+	</p>
 
 	{{ Form::open(array('action' => 'ThreadController@store', 'class' => 'form-horizontal' )) }}
 		<div class="form-group {{ $errors->has('subject') ? 'has-error' : '' }}">
