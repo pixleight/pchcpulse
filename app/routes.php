@@ -14,10 +14,7 @@
 Route::pattern('token', '[A-Za-z0-9]{6}');
 $token_pattern = '[a-zA-Z0-9]{6}';
 
-Route::get('/', function()
-{
-	return View::make('hello');
-});
+Route::get('/', 'ThreadController@create');
 
 Route::group(array('before'=>'auth'), function() {   
 	Route::resource('user', 'UserController');
