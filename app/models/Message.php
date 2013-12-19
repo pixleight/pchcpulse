@@ -11,7 +11,7 @@ class Message extends Eloquent {
 	 */
 	protected $table = 'messages';
 
-	public function saveMessage( $thread_id, $user_id = 0, $message, $noreply = 0 )
+	public function saveMessage( $thread_id, $user_id = 0, $message, $noreply = false )
 	{
 		if( $user_id ) {
 			$user = User::find( $user_id );
