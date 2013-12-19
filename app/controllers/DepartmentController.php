@@ -9,7 +9,8 @@ class DepartmentController extends \BaseController {
 	 */
 	public function index()
 	{
-		
+		$departments = Department::all();
+		return View::make('departments.index')->with('departments', $departments);
 	}
 
 	/**
@@ -33,6 +34,8 @@ class DepartmentController extends \BaseController {
 		$department = new Department;
 		$department->fill( $data );
 		$department->save();
+		Session::flash( 'flash_type', 'success' );
+		Session::flash( 'flash_message', 'Department "' . $department->name . '" has been saved.' );
 		return Redirect::action('DepartmentController@show', array( $department->id ));
 	}
 
@@ -44,7 +47,8 @@ class DepartmentController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
+		$department = Department::find($id);
+		return View::make('departments.show')->with('department', $department);
 	}
 
 	/**
@@ -55,7 +59,8 @@ class DepartmentController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//
+		$department = Department::find($id);
+		return View::make('departments.edit')->with('department', $department);
 	}
 
 	/**
@@ -66,7 +71,26 @@ class DepartmentController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		$data = Input::all();
+		
+		$rules = array(
+			'name' => 'required',
+		);
+		
+		$validator = Validator::make( $data, $rules );
+
+		if( $validator->fails() ) {
+			$messages = $validator->messages();
+			return Redirect::to( 'department/'.$id.'/edit' )->withErrors( $validator )->withInput();
+		}
+
+		$department = Department::find($id);
+		$department->name = $data['name'];
+		$department->save();
+
+		Session::flash( 'flash_type', 'success' );
+		Session::flash( 'flash_message', 'Department "' . $department->name . '" has been updated.' );
+		return Redirect::action('DepartmentController@index');
 	}
 
 	/**
@@ -77,7 +101,11 @@ class DepartmentController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+		$department = Department::find($id);
+		$department->delete();
+		Session::flash( 'flash_type', 'success' );
+		Session::flash( 'flash_message', 'Department has been deleted.' );
+		return Redirect::action('DepartmentController@index');
 	}
 
 }
